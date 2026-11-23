@@ -136,6 +136,66 @@ async function load3D(){
 
 </script>
 <script>
+// Remove groups of small, separate marks on a common baseline before OCR.
+function removeDottedLeaders(image) {
+  const {width, height, data: pixels} = image;
+  const maxDot = Math.max(3, Math.round(Math.max(width, height) * .0032));
+  const dark = new Uint8Array(width * height);
+  for (let i = 0; i < dark.length; i++) {
+    const p = i * 4;
+    dark[i] = pixels[p + 3] > 128
+      && pixels[p] * .299 + pixels[p + 1] * .587 + pixels[p + 2] * .114 < 150;
+  }
+  const queue = new Int32Array(dark.length);
+  const dots = [];
+  for (let start = 0; start < dark.length; start++) {
+    if (!dark[start]) continue;
+    let size = 1;
+    queue[0] = start;
+    dark[start] = 0;
+    let left = start % width, right = left;
+    let top = Math.floor(start / width), bottom = top;
+    for (let head = 0; head < size; head++) {
+      const i = queue[head], x = i % width, y = Math.floor(i / width);
+      left = Math.min(left, x);
+      right = Math.max(right, x);
+      bottom = Math.max(bottom, y);
+      for (let dy = Math.max(-1, -y); dy <= Math.min(1, height - 1 - y); dy++) {
+        for (let dx = Math.max(-1, -x); dx <= Math.min(1, width - 1 - x); dx++) {
+          const next = i + dy * width + dx;
+          if (dark[next]) {
+            dark[next] = 0;
+            queue[size++] = next;
+          }
+        }
+      }
+    }
+    if (right - left < maxDot && bottom - top < maxDot && size >= 2) {
+      dots.push({left, right, top, bottom});
+    }
+  }
+  dots.sort((a, b) => a.left - b.left);
+  let removed = 0;
+  for (let i = 0; i < dots.length; i++) {
+    const dot = dots[i];
+    let neighbors = 0;
+    for (let j = Math.max(0, i - 1); j >= 0 && j < i && dot.left - dots[j].left <= maxDot * 15; j--) {
+      if (Math.abs(dot.top - dots[j].top) <= maxDot && dot.left - dots[j].left >= maxDot) neighbors++;
+    }
+    for (let j = i + 1; j < dots.length && dots[j].left - dot.left <= maxDot * 15; j++) {
+      if (Math.abs(dot.top - dots[j].top) <= maxDot && dots[j].left - dot.left >= maxDot) neighbors++;
+    }
+    if (neighbors < 4) continue;
+    for (let y = Math.max(0, dot.top - 1); y <= Math.min(height - 1, dot.bottom + 1); y++) {
+      for (let x = Math.max(0, dot.left - 1); x <= Math.min(width - 1, dot.right + 1); x++) {
+        pixels.fill(255, (y * width + x) * 4, (y * width + x) * 4 + 3);
+      }
+    }
+    removed++;
+  }
+  return removed;
+}
+
 const materialForm = $('materialForm');
 const contentsDraft = $('contentsDraft');
 const contentsStatus = $('contentsStatus');
@@ -146,6 +206,7 @@ function extractUnits(text) {
   const lines = text.split(/\r?\n/).map(line => {
     return line.normalize('NFKC').trim()
       .replace(/\s*(?:[.…⋯・_]{2,}|\s{2,}|\s+)[ \t]*\d{1,4}\s*$/, '')
+      .replace(/\s*(?:[.⋯・_]{3,}|[ー―—-]{3,}|(?:[ー―—-]{2,}\s+){2,}).*$/, '')
       .replace(/^[.…⋯・_\s]+|[.…⋯・_\s]+$/g, '');
   });
   return [...new Set(lines.filter(line => /[\p{L}]/u.test(line)
@@ -202,12 +263,15 @@ readContents.onclick = async () => {
   let worker;
   let pdfjs;
   let pdfPages = 0;
-  async function recognize(image, languages) {
+  async function recognize(canvas, languages) {
+    const context = canvas.getContext('2d');
+    const pixels = context.getImageData(0, 0, canvas.width, canvas.height);
+    if (removeDottedLeaders(pixels)) context.putImageData(pixels, 0, 0);
     if (!worker) {
       const ocr = await loadOCR();
       worker = await ocr.createWorker(languages);
     }
-    return (await worker.recognize(image)).data.text;
+    return (await worker.recognize(canvas)).data.text;
   }
   const failures = [];
   try {
