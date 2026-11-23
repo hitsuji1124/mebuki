@@ -75,10 +75,30 @@ footer { margin: 18px 4px; line-height: 1.7; }
   .card { padding: 14px; }
   .world-card, .timer-world { padding: 0; }
 }
-</style><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js"}}</script></head><body><div class="app"><header><h1>Mebuki</h1><div class="muted">学ぶたび、世界が芽吹く</div></header><nav class="tabs" id="tabs" aria-label="メインメニュー"><button data-tab="world" class="active">世界</button><button data-tab="study">勉強</button><button data-tab="progress">進捗</button><button data-tab="history">記録</button></nav><section class="subject-picker" aria-label="教科"><div class="subjects" id="subjects"></div></section><section id="worldPanel"><div class="card world-card"><h2 id="worldTitle">理科の世界</h2><div class="scene" id="worldScene"><div class="scenehint">指で回転・拡大・移動できます</div></div><div class="world-details"><div class="grid"><div class="stat"><strong id="totalTime">0分</strong><small>累計学習時間</small></div><div class="stat"><strong id="growthCount">0</strong><small>成長イベント</small></div><div class="stat"><strong id="stage">1</strong><small>世界のステージ</small></div></div><div class="field"><label for="theme">風景テーマ</label><select id="theme"><option value="forest">緑の森林</option><option value="sakura">桜の庭園</option><option value="snow">雪山</option><option value="tropical">南国の島</option><option value="meadow">花の草原</option><option value="fantasy">幻想の森</option></select></div><p class="muted">テーマ変更時は現在の成長を引き継ぎます。世界は勉強時間15分ごとに少しずつ育ち、節目で土地が広がります。</p></div></div></section><section id="studyPanel" class="hidden"><div class="card"><h2>勉強タイマー</h2><div class="modes" id="modes"><button data-mode="stopwatch" class="active">ストップウォッチ</button><button data-mode="pomodoro">ポモドーロ</button></div><div id="pomoOptions" class="two hidden"><div class="field"><label for="focusMins">集中（分）</label><input id="focusMins" type="number" min="1" max="180" value="25"></div><div class="field"><label for="breakMins">休憩（分）</label><input id="breakMins" type="number" min="1" max="60" value="5"></div></div><div class="timer" id="clock">00:00:00</div><div class="muted" id="timerStatus" style="text-align:center">準備完了</div><div class="actions" style="justify-content:center"><button class="primary" id="startBtn">開始</button><button class="secondary" id="pauseBtn">一時停止</button><button class="warn" id="finishBtn">終了して保存</button></div><div class="field"><label for="grade">学年</label><select id="grade"><option>中1</option><option>中2</option><option>中3</option><option>高校</option><option>その他</option></select></div><div class="field"><label for="unit">単元（自由入力）</label><input id="unit" placeholder="例：一次方程式"></div><div class="field"><label for="material">教材（自由入力）</label><input id="material" placeholder="例：Startoo、ハイクラス徹底問題集"></div><div class="field"><label for="note">学習メモ</label><textarea id="note" placeholder="解いたページや気づいたこと"></textarea></div><p class="muted">ポモドーロは集中時間のみ記録します。画面を離れても開始時刻から経過時間を復元します。通知・自動休憩切替は未実装です。</p></div><div class="card timer-world"><h2>勉強中の世界</h2><div class="scene" id="timerScene"></div></div></section><section id="progressPanel" class="hidden"><div class="card"><h2>単元の進捗を登録</h2><div class="field"><label for="pGrade">学年</label><select id="pGrade"><option>中1</option><option>中2</option><option>中3</option><option>高校</option><option>その他</option></select></div><div class="field"><label for="pUnit">単元</label><input id="pUnit" placeholder="例：一次方程式"></div><div class="field"><label for="pMaterial">教材</label><input id="pMaterial" placeholder="例：Startoo"></div><div class="field"><label for="pPhase">学習段階</label><select id="pPhase"><option>解説</option><option>確認</option><option>直し</option><option>復習</option><option>完了</option></select></div><div class="two"><div class="field"><label for="correct">正解数</label><input id="correct" type="number" min="0" placeholder="0"></div><div class="field"><label for="answered">解答数</label><input id="answered" type="number" min="0" placeholder="0"></div></div><div class="field"><label for="reviewDate">次の復習予定日</label><input id="reviewDate" type="date"></div><div class="field"><label for="pNote">メモ</label><textarea id="pNote"></textarea></div><button class="primary" id="saveProgress">進捗を保存</button></div><div class="card"><h2>登録済みの進捗</h2><div id="progressList" class="muted">まだ登録されていません</div></div></section><section id="historyPanel" class="hidden"><div class="card"><h2>学習時間の集計</h2><div id="allStats"></div></div><div class="card"><h2>学習履歴</h2><div id="historyList" class="muted">まだ記録がありません</div></div><div class="card"><button class="secondary" id="exportBtn">記録をJSONで書き出す</button><p class="muted">この試作版の記録はSafari内に保存されます。Safariのデータ消去や端末変更で失われる可能性があるため、定期的に書き出してください。</p></div></section><footer>試作版：3Dライブラリを読み込めない場合は軽量な簡易表示に切り替わります。データはこの端末のブラウザに保存され、端末間同期はありません。Safariの制約により、バックグラウンドでの通知や動作を保証するものではありません。</footer></div><script>
+
+.material-units { display: grid; gap: 5px; padding-left: 24px; }
+.material-status { min-height: 1.6em; }
+.material-card h3 { font-size: 16px; margin: 12px 0 4px; overflow-wrap: anywhere; }
+.material-unit { text-align: left; overflow-wrap: anywhere; }
+#contentsDraft { min-height: 130px; }
+</style><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js"}}</script></head><body><div class="app"><header><h1>Mebuki</h1><div class="muted">学ぶたび、世界が芽吹く</div></header><nav class="tabs" id="tabs" aria-label="メインメニュー"><button data-tab="world" class="active">世界</button><button data-tab="study">勉強</button><button data-tab="progress">進捗</button><button data-tab="history">記録</button></nav><section class="subject-picker" aria-label="教科"><div class="subjects" id="subjects"></div></section><section id="worldPanel"><div class="card world-card"><h2 id="worldTitle">理科の世界</h2><div class="scene" id="worldScene"><div class="scenehint">指で回転・拡大・移動できます</div></div><div class="world-details"><div class="grid"><div class="stat"><strong id="totalTime">0分</strong><small>累計学習時間</small></div><div class="stat"><strong id="growthCount">0</strong><small>成長イベント</small></div><div class="stat"><strong id="stage">1</strong><small>世界のステージ</small></div></div><div class="field"><label for="theme">風景テーマ</label><select id="theme"><option value="forest">緑の森林</option><option value="sakura">桜の庭園</option><option value="snow">雪山</option><option value="tropical">南国の島</option><option value="meadow">花の草原</option><option value="fantasy">幻想の森</option></select></div><p class="muted">テーマ変更時は現在の成長を引き継ぎます。世界は勉強時間15分ごとに少しずつ育ち、節目で土地が広がります。</p></div></div></section><section id="studyPanel" class="hidden"><div class="card"><h2>勉強タイマー</h2><div class="modes" id="modes"><button data-mode="stopwatch" class="active">ストップウォッチ</button><button data-mode="pomodoro">ポモドーロ</button></div><div id="pomoOptions" class="two hidden"><div class="field"><label for="focusMins">集中（分）</label><input id="focusMins" type="number" min="1" max="180" value="25"></div><div class="field"><label for="breakMins">休憩（分）</label><input id="breakMins" type="number" min="1" max="60" value="5"></div></div><div class="timer" id="clock">00:00:00</div><div class="muted" id="timerStatus" style="text-align:center">準備完了</div><div class="actions" style="justify-content:center"><button class="primary" id="startBtn">開始</button><button class="secondary" id="pauseBtn">一時停止</button><button class="warn" id="finishBtn">終了して保存</button></div><div class="field"><label for="grade">学年</label><select id="grade"><option>中1</option><option>中2</option><option>中3</option><option>高校</option><option>その他</option></select></div><div class="field"><label for="unit">単元（自由入力）</label><input id="unit" placeholder="例：一次方程式"></div><div class="field"><label for="material">教材（自由入力）</label><input id="material" placeholder="例：Startoo、ハイクラス徹底問題集"></div><div class="field"><label for="note">学習メモ</label><textarea id="note" placeholder="解いたページや気づいたこと"></textarea></div><p class="muted">ポモドーロは集中時間のみ記録します。画面を離れても開始時刻から経過時間を復元します。通知・自動休憩切替は未実装です。</p></div><div class="card timer-world"><h2>勉強中の世界</h2><div class="scene" id="timerScene"></div></div></section><section id="progressPanel" class="hidden">
+<div class="card material-card">
+  <h2 id="materialsTitle">教科の教材</h2>
+  <form id="materialForm">
+    <div class="field"><label for="bookTitle">教材名</label><input id="bookTitle" required maxlength="150" placeholder="例：ハイクラス徹底問題集 中1数学"></div>
+    <div class="field"><label for="contentsFile">目次の写真・PDF</label><input id="contentsFile" type="file" accept="image/*,.pdf,application/pdf" multiple></div>
+    <p class="muted">目次だけを選んでね。写真は複数枚、PDFは合計20ページまで読み取れます。</p>
+    <button class="secondary" type="button" id="readContents">単元を読み取る</button>
+    <p class="muted material-status" id="contentsStatus" role="status"></p>
+    <div class="field"><label for="contentsDraft">単元名（1行に1つ）</label><textarea id="contentsDraft" required placeholder="読み取った単元名はここで修正できます。手入力もできます。"></textarea></div>
+    <button class="primary" type="submit">教科に教材を追加</button>
+  </form>
+  <div id="materialsList"></div>
+</div>
+<div class="card"><h2>単元の進捗を登録</h2><div class="field"><label for="pGrade">学年</label><select id="pGrade"><option>中1</option><option>中2</option><option>中3</option><option>高校</option><option>その他</option></select></div><div class="field"><label for="pUnit">単元</label><input id="pUnit" placeholder="例：一次方程式"></div><div class="field"><label for="pMaterial">教材</label><input id="pMaterial" placeholder="例：Startoo"></div><div class="field"><label for="pPhase">学習段階</label><select id="pPhase"><option>解説</option><option>確認</option><option>直し</option><option>復習</option><option>完了</option></select></div><div class="two"><div class="field"><label for="correct">正解数</label><input id="correct" type="number" min="0" placeholder="0"></div><div class="field"><label for="answered">解答数</label><input id="answered" type="number" min="0" placeholder="0"></div></div><div class="field"><label for="reviewDate">次の復習予定日</label><input id="reviewDate" type="date"></div><div class="field"><label for="pNote">メモ</label><textarea id="pNote"></textarea></div><button class="primary" id="saveProgress">進捗を保存</button></div><div class="card"><h2>登録済みの進捗</h2><div id="progressList" class="muted">まだ登録されていません</div></div></section><section id="historyPanel" class="hidden"><div class="card"><h2>学習時間の集計</h2><div id="allStats"></div></div><div class="card"><h2>学習履歴</h2><div id="historyList" class="muted">まだ記録がありません</div></div><div class="card"><button class="secondary" id="exportBtn">記録をJSONで書き出す</button><p class="muted">この試作版の記録はSafari内に保存されます。Safariのデータ消去や端末変更で失われる可能性があるため、定期的に書き出してください。</p></div></section><footer>試作版：3Dライブラリを読み込めない場合は軽量な簡易表示に切り替わります。データはこの端末のブラウザに保存され、端末間同期はありません。Safariの制約により、バックグラウンドでの通知や動作を保証するものではありません。</footer></div><script>
 let THREE, OrbitControls;
 const names=['国語','数学','英語','理科','社会'],keys=['japanese','math','english','science','social'];const key='manabi-world-v01';const empty=()=>({records:[],progress:[],worlds:Object.fromEntries(keys.map(k=>[k,{theme:'forest'}])),timer:null});let data;try{data={...empty(),...JSON.parse(localStorage.getItem(key)||'{}')}}catch{data=empty()}for(const k of keys)data.worlds[k]??={theme:'forest'};let subject='science',tab='world',mode='stopwatch',scene=null,renderer=null,camera=null,controls=null,worldGroup=null,lastTick=Date.now();const $=id=>document.getElementById(id),save=()=>{try{localStorage.setItem(key,JSON.stringify(data))}catch(e){console.warn("保存不可",e)}};const mins=k=>data.records.filter(r=>r.subject===k).reduce((s,r)=>s+r.minutes,0);const fmt=n=>{n=Math.floor(n);return n>=60?`${Math.floor(n/60)}時間${n%60}分`:`${n}分`};const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));function renderSubjects(){ $('subjects').innerHTML=keys.map((k,i)=>`<button class="${k===subject?'active':''}" data-subject="${k}">${names[i]}</button>`).join('');document.querySelectorAll('[data-subject]').forEach(b=>b.onclick=()=>{subject=b.dataset.subject;renderSubjects();refresh()})}function switchTab(t){tab=t;for(const x of ['world','study','progress','history'])$(x+'Panel').classList.toggle('hidden',x!==t);document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));setTimeout(()=>{moveScene();refresh()},50)}document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));function moveScene(){if(!renderer){document.querySelectorAll("canvas.fallback").forEach(x=>x.remove());drawFallback();return;}const target=$(tab==='study'?'timerScene':'worldScene');if(tab==='progress'||tab==='history')return;if(renderer.domElement.parentElement!==target)target.prepend(renderer.domElement);resizeScene()}function resizeScene(){if(!renderer)return;const el=renderer.domElement.parentElement;const w=el.clientWidth,h=el.clientHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix()}
-const mat=c=>new THREE.MeshLambertMaterial({color:c,flatShading:true});function box(w,h,d,color,x,y,z,parent=worldGroup){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat(color));o.position.set(x,y,z);parent.add(o);return o}function sphere(r,color,x,y,z,detail=1,parent=worldGroup){const o=new THREE.Mesh(new THREE.IcosahedronGeometry(r,detail),mat(color));o.position.set(x,y,z);parent.add(o);return o}function cylinder(r1,r2,h,color,x,y,z,parent=worldGroup){const o=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,6),mat(color));o.position.set(x,y,z);parent.add(o);return o}const palettes={forest:{ground:0x94c995,tree:0x69aa7a,leaf:0x79b889},sakura:{ground:0xb8d6a0,tree:0xeaa7c5,leaf:0xf6c6d8},snow:{ground:0xe8f0ee,tree:0x9fc5bc,leaf:0xc4e3df},tropical:{ground:0xe5d5a0,tree:0x6caf8c,leaf:0x86c99b},meadow:{ground:0xa6d48c,tree:0x7eae72,leaf:0xa7d993},fantasy:{ground:0xa7b3d8,tree:0x9782c7,leaf:0xc5b4eb}};function rand(seed){let x=Math.sin(seed*128.53+45.18)*43758.5453;return x-Math.floor(x)}function rebuildWorld(){if(!worldGroup)return;while(worldGroup.children.length){const c=worldGroup.children[0];worldGroup.remove(c);c.geometry?.dispose();if(c.material?.dispose)c.material.dispose()}const p=palettes[data.worlds[subject].theme]||palettes.forest;const growth=Math.floor(mins(subject)/15);const stage=1+Math.floor(mins(subject)/600);const radius=Math.min(5.5+Math.floor(mins(subject)/600)*1.15,18);cylinder(radius,radius*.92,.75,p.ground,0,-.25,0);cylinder(radius*.93,radius*.78,.55,0xb5a58d,0,-.87,0);sphere(.6,0x8fc6df,1,.12,1.3,2);const n=Math.min(5+growth,250);for(let i=0;i<n;i++){const a=rand(i*7+subject.length)*Math.PI*2;const rr=Math.sqrt(rand(i*11+4))*(radius-1);const x=Math.cos(a)*rr,z=Math.sin(a)*rr;const type=i%7;if(type===0){sphere(.13,i%2?0xf1c77c:0xf2a4ae,x,.13,z,1)}else if(type===1){sphere(.25,0xb1b7ae,x,.13,z,0)}else{const h=.42+rand(i+8)*.55;cylinder(.1,.14,h,0x8e8066,x,h/2,z);sphere(.35+rand(i+13)*.2,i%3?p.tree:p.leaf,x,h+.22,z,1)}}if(growth>=12){box(1.15,.75,.95,0xe8d2aa,-1,.38,-1);const roof=new THREE.Mesh(new THREE.ConeGeometry(.94,.65,4),mat(0xba8676));roof.rotation.y=Math.PI/4;roof.position.set(-1,1.05,-1);worldGroup.add(roof)}if(growth>=40){sphere(.7,0x80c8dc,-2,.12,2,2)}if(growth>=100){box(.8,1.1,.8,0xd9b79c,2,.55,-2);sphere(.75,p.leaf,2,1.4,-2,1)}}function init3D(){try{scene=new THREE.Scene();scene.background=new THREE.Color(0xe2eff1);camera=new THREE.PerspectiveCamera(45,1,.1,150);camera.position.set(12,12,15);renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'low-power'});renderer.setPixelRatio(Math.min(devicePixelRatio,2));$('worldScene').prepend(renderer.domElement);scene.add(new THREE.HemisphereLight(0xffffff,0x9baf9c,2.4));const sun=new THREE.DirectionalLight(0xffffff,2.1);sun.position.set(8,15,9);scene.add(sun);worldGroup=new THREE.Group();scene.add(worldGroup);controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.maxPolarAngle=Math.PI*.48;controls.minDistance=6;controls.maxDistance=48;controls.enablePan=true;resizeScene();rebuildWorld();const animate=()=>{requestAnimationFrame(animate);controls.update();renderer.render(scene,camera)};animate();new ResizeObserver(resizeScene).observe($('worldScene'));new ResizeObserver(resizeScene).observe($('timerScene'))}catch(e){$('worldScene').insertAdjacentHTML('afterbegin','<p style="padding:25px">3Dを表示できませんでした。インターネット接続を確認してください。</p>')}}function refresh(){renderSubjects();$('worldTitle').textContent=names[keys.indexOf(subject)]+'の世界';$('theme').value=data.worlds[subject].theme;const m=mins(subject);$('totalTime').textContent=fmt(m);$('growthCount').textContent=Math.floor(m/15);$('stage').textContent=1+Math.floor(m/600);if(worldGroup)rebuildWorld();else drawFallback();renderHistory();renderProgress();updateTimerUI()}$('theme').onchange=e=>{data.worlds[subject].theme=e.target.value;save();refresh()};function timerElapsed(){const t=data.timer;if(!t)return 0;return t.accumulated+(t.running?Math.max(0,(Date.now()-t.startedAt)/60000):0)}function updateTimerUI(){const t=data.timer;let sec=Math.floor(timerElapsed()*60);if(t?.mode==='pomodoro'){const cap=Math.max(1,t.focus)*60;sec=Math.max(0,cap-sec)}$('clock').textContent=[Math.floor(sec/3600),Math.floor(sec/60)%60,sec%60].map(n=>String(n).padStart(2,'0')).join(':');$('timerStatus').textContent=!t?'準備完了':t.running?'計測中（'+names[keys.indexOf(t.subject)]+'）':'一時停止中';$('startBtn').textContent=t?(t.running?'計測中':'再開'):'開始';$('startBtn').disabled=!!t?.running;$('focusMins').disabled=!!t;$('breakMins').disabled=!!t}document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{if(data.timer){alert('実行中のタイマーを終了してから切り替えてください');return}mode=b.dataset.mode;document.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('active',x.dataset.mode===mode));$('pomoOptions').classList.toggle('hidden',mode!=='pomodoro');updateTimerUI()});$('startBtn').onclick=()=>{if(data.timer){if(!data.timer.running){data.timer.startedAt=Date.now();data.timer.running=true}}else{data.timer={subject,mode,focus:Math.max(1,Number($('focusMins').value)||25),break:Math.max(1,Number($('breakMins').value)||5),grade:$('grade').value,unit:$('unit').value,material:$('material').value,note:$('note').value,startedAt:Date.now(),accumulated:0,running:true}}save();updateTimerUI()};$('pauseBtn').onclick=()=>{const t=data.timer;if(!t||!t.running)return;t.accumulated=timerElapsed();t.running=false;save();updateTimerUI()};$('finishBtn').onclick=()=>{const t=data.timer;if(!t)return;let m=timerElapsed();if(t.mode==='pomodoro')m=Math.min(m,t.focus);if(m<1/60){if(!confirm('1秒未満です。記録せず終了しますか？'))return}else{data.records.unshift({id:Date.now(),date:new Date().toISOString(),subject:t.subject,minutes:Math.round(m*100)/100,grade:t.grade,unit:t.unit,material:t.material,note:t.note,mode:t.mode})}data.timer=null;save();refresh();alert('学習を記録しました！')};function renderHistory(){const total=keys.map((k,i)=>`<div class="record"><b>${names[i]}</b>　${fmt(mins(k))}</div>`).join('');$('allStats').innerHTML=total;$('historyList').innerHTML=data.records.length?data.records.slice(0,100).map(r=>`<div class="record"><b>${esc(names[keys.indexOf(r.subject)])}・${esc(r.grade)}・${esc(r.unit||'単元未設定')}</b> <span class="pill">${fmt(r.minutes)}</span><div class="muted">${new Date(r.date).toLocaleString('ja-JP')} ／ ${esc(r.material||'教材未設定')}</div>${r.note?`<div>${esc(r.note)}</div>`:''}</div>`).join(''):'まだ記録がありません'}$('saveProgress').onclick=()=>{const unit=$('pUnit').value.trim();if(!unit){alert('単元を入力してください');return}const correct=Number($('correct').value),answered=Number($('answered').value);if(correct<0||answered<0||correct>answered){alert('正解数と解答数を確認してください');return}data.progress.unshift({id:Date.now(),subject,grade:$('pGrade').value,unit,material:$('pMaterial').value,phase:$('pPhase').value,correct,answered,reviewDate:$('reviewDate').value,note:$('pNote').value});save();renderProgress();alert('進捗を保存しました')};function renderProgress(){$('progressList').innerHTML=data.progress.length?data.progress.filter(p=>p.subject===subject).map(p=>`<div class="record"><b>${esc(p.grade)}・${esc(p.unit)}</b> <span class="pill">${esc(p.phase)}</span><div class="muted">${esc(p.material||'教材未設定')} ／ 正答率 ${p.answered?Math.round(p.correct/p.answered*100)+'%':'未集計'} ／ 復習 ${esc(p.reviewDate||'未設定')}</div>${p.answered?`<div class="progress"><span style="width:${p.correct/p.answered*100}%"></span></div>`:''}${p.note?`<div>${esc(p.note)}</div>`:''}</div>`).join('')||'この教科の進捗はまだありません':'まだ登録されていません'}$('exportBtn').onclick=()=>{const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='manabi-world-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};setInterval(()=>{if(data.timer?.running&&data.timer.mode==='pomodoro'&&timerElapsed()>=data.timer.focus){$('timerStatus').textContent='集中時間が終了しました。終了して保存してください'}updateTimerUI()},1000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)updateTimerUI()});
+const mat=c=>new THREE.MeshLambertMaterial({color:c,flatShading:true});function box(w,h,d,color,x,y,z,parent=worldGroup){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat(color));o.position.set(x,y,z);parent.add(o);return o}function sphere(r,color,x,y,z,detail=1,parent=worldGroup){const o=new THREE.Mesh(new THREE.IcosahedronGeometry(r,detail),mat(color));o.position.set(x,y,z);parent.add(o);return o}function cylinder(r1,r2,h,color,x,y,z,parent=worldGroup){const o=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,6),mat(color));o.position.set(x,y,z);parent.add(o);return o}const palettes={forest:{ground:0x94c995,tree:0x69aa7a,leaf:0x79b889},sakura:{ground:0xb8d6a0,tree:0xeaa7c5,leaf:0xf6c6d8},snow:{ground:0xe8f0ee,tree:0x9fc5bc,leaf:0xc4e3df},tropical:{ground:0xe5d5a0,tree:0x6caf8c,leaf:0x86c99b},meadow:{ground:0xa6d48c,tree:0x7eae72,leaf:0xa7d993},fantasy:{ground:0xa7b3d8,tree:0x9782c7,leaf:0xc5b4eb}};function rand(seed){let x=Math.sin(seed*128.53+45.18)*43758.5453;return x-Math.floor(x)}function rebuildWorld(){if(!worldGroup)return;while(worldGroup.children.length){const c=worldGroup.children[0];worldGroup.remove(c);c.geometry?.dispose();if(c.material?.dispose)c.material.dispose()}const p=palettes[data.worlds[subject].theme]||palettes.forest;const growth=Math.floor(mins(subject)/15);const stage=1+Math.floor(mins(subject)/600);const radius=Math.min(5.5+Math.floor(mins(subject)/600)*1.15,18);cylinder(radius,radius*.92,.75,p.ground,0,-.25,0);cylinder(radius*.93,radius*.78,.55,0xb5a58d,0,-.87,0);sphere(.6,0x8fc6df,1,.12,1.3,2);const n=Math.min(5+growth,250);for(let i=0;i<n;i++){const a=rand(i*7+subject.length)*Math.PI*2;const rr=Math.sqrt(rand(i*11+4))*(radius-1);const x=Math.cos(a)*rr,z=Math.sin(a)*rr;const type=i%7;if(type===0){sphere(.13,i%2?0xf1c77c:0xf2a4ae,x,.13,z,1)}else if(type===1){sphere(.25,0xb1b7ae,x,.13,z,0)}else{const h=.42+rand(i+8)*.55;cylinder(.1,.14,h,0x8e8066,x,h/2,z);sphere(.35+rand(i+13)*.2,i%3?p.tree:p.leaf,x,h+.22,z,1)}}if(growth>=12){box(1.15,.75,.95,0xe8d2aa,-1,.38,-1);const roof=new THREE.Mesh(new THREE.ConeGeometry(.94,.65,4),mat(0xba8676));roof.rotation.y=Math.PI/4;roof.position.set(-1,1.05,-1);worldGroup.add(roof)}if(growth>=40){sphere(.7,0x80c8dc,-2,.12,2,2)}if(growth>=100){box(.8,1.1,.8,0xd9b79c,2,.55,-2);sphere(.75,p.leaf,2,1.4,-2,1)}}function init3D(){try{scene=new THREE.Scene();scene.background=new THREE.Color(0xe2eff1);camera=new THREE.PerspectiveCamera(45,1,.1,150);camera.position.set(12,12,15);renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'low-power'});renderer.setPixelRatio(Math.min(devicePixelRatio,2));$('worldScene').prepend(renderer.domElement);scene.add(new THREE.HemisphereLight(0xffffff,0x9baf9c,2.4));const sun=new THREE.DirectionalLight(0xffffff,2.1);sun.position.set(8,15,9);scene.add(sun);worldGroup=new THREE.Group();scene.add(worldGroup);controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.maxPolarAngle=Math.PI*.48;controls.minDistance=6;controls.maxDistance=48;controls.enablePan=true;resizeScene();rebuildWorld();const animate=()=>{requestAnimationFrame(animate);controls.update();renderer.render(scene,camera)};animate();new ResizeObserver(resizeScene).observe($('worldScene'));new ResizeObserver(resizeScene).observe($('timerScene'))}catch(e){$('worldScene').insertAdjacentHTML('afterbegin','<p style="padding:25px">3Dを表示できませんでした。インターネット接続を確認してください。</p>')}}function refresh(){renderSubjects();$('worldTitle').textContent=names[keys.indexOf(subject)]+'の世界';$('theme').value=data.worlds[subject].theme;const m=mins(subject);$('totalTime').textContent=fmt(m);$('growthCount').textContent=Math.floor(m/15);$('stage').textContent=1+Math.floor(m/600);if(worldGroup)rebuildWorld();else drawFallback();renderHistory();renderProgress();renderMaterials();updateTimerUI()}$('theme').onchange=e=>{data.worlds[subject].theme=e.target.value;save();refresh()};function timerElapsed(){const t=data.timer;if(!t)return 0;return t.accumulated+(t.running?Math.max(0,(Date.now()-t.startedAt)/60000):0)}function updateTimerUI(){const t=data.timer;let sec=Math.floor(timerElapsed()*60);if(t?.mode==='pomodoro'){const cap=Math.max(1,t.focus)*60;sec=Math.max(0,cap-sec)}$('clock').textContent=[Math.floor(sec/3600),Math.floor(sec/60)%60,sec%60].map(n=>String(n).padStart(2,'0')).join(':');$('timerStatus').textContent=!t?'準備完了':t.running?'計測中（'+names[keys.indexOf(t.subject)]+'）':'一時停止中';$('startBtn').textContent=t?(t.running?'計測中':'再開'):'開始';$('startBtn').disabled=!!t?.running;$('focusMins').disabled=!!t;$('breakMins').disabled=!!t}document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{if(data.timer){alert('実行中のタイマーを終了してから切り替えてください');return}mode=b.dataset.mode;document.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('active',x.dataset.mode===mode));$('pomoOptions').classList.toggle('hidden',mode!=='pomodoro');updateTimerUI()});$('startBtn').onclick=()=>{if(data.timer){if(!data.timer.running){data.timer.startedAt=Date.now();data.timer.running=true}}else{data.timer={subject,mode,focus:Math.max(1,Number($('focusMins').value)||25),break:Math.max(1,Number($('breakMins').value)||5),grade:$('grade').value,unit:$('unit').value,material:$('material').value,note:$('note').value,startedAt:Date.now(),accumulated:0,running:true}}save();updateTimerUI()};$('pauseBtn').onclick=()=>{const t=data.timer;if(!t||!t.running)return;t.accumulated=timerElapsed();t.running=false;save();updateTimerUI()};$('finishBtn').onclick=()=>{const t=data.timer;if(!t)return;let m=timerElapsed();if(t.mode==='pomodoro')m=Math.min(m,t.focus);if(m<1/60){if(!confirm('1秒未満です。記録せず終了しますか？'))return}else{data.records.unshift({id:Date.now(),date:new Date().toISOString(),subject:t.subject,minutes:Math.round(m*100)/100,grade:t.grade,unit:t.unit,material:t.material,note:t.note,mode:t.mode})}data.timer=null;save();refresh();alert('学習を記録しました！')};function renderHistory(){const total=keys.map((k,i)=>`<div class="record"><b>${names[i]}</b>　${fmt(mins(k))}</div>`).join('');$('allStats').innerHTML=total;$('historyList').innerHTML=data.records.length?data.records.slice(0,100).map(r=>`<div class="record"><b>${esc(names[keys.indexOf(r.subject)])}・${esc(r.grade)}・${esc(r.unit||'単元未設定')}</b> <span class="pill">${fmt(r.minutes)}</span><div class="muted">${new Date(r.date).toLocaleString('ja-JP')} ／ ${esc(r.material||'教材未設定')}</div>${r.note?`<div>${esc(r.note)}</div>`:''}</div>`).join(''):'まだ記録がありません'}$('saveProgress').onclick=()=>{const unit=$('pUnit').value.trim();if(!unit){alert('単元を入力してください');return}const correct=Number($('correct').value),answered=Number($('answered').value);if(correct<0||answered<0||correct>answered){alert('正解数と解答数を確認してください');return}data.progress.unshift({id:Date.now(),subject,grade:$('pGrade').value,unit,material:$('pMaterial').value,phase:$('pPhase').value,correct,answered,reviewDate:$('reviewDate').value,note:$('pNote').value});save();renderProgress();alert('進捗を保存しました')};function renderProgress(){$('progressList').innerHTML=data.progress.length?data.progress.filter(p=>p.subject===subject).map(p=>`<div class="record"><b>${esc(p.grade)}・${esc(p.unit)}</b> <span class="pill">${esc(p.phase)}</span><div class="muted">${esc(p.material||'教材未設定')} ／ 正答率 ${p.answered?Math.round(p.correct/p.answered*100)+'%':'未集計'} ／ 復習 ${esc(p.reviewDate||'未設定')}</div>${p.answered?`<div class="progress"><span style="width:${p.correct/p.answered*100}%"></span></div>`:''}${p.note?`<div>${esc(p.note)}</div>`:''}</div>`).join('')||'この教科の進捗はまだありません':'まだ登録されていません'}$('exportBtn').onclick=()=>{const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='manabi-world-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};setInterval(()=>{if(data.timer?.running&&data.timer.mode==='pomodoro'&&timerElapsed()>=data.timer.focus){$('timerStatus').textContent='集中時間が終了しました。終了して保存してください'}updateTimerUI()},1000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)updateTimerUI()});
 let fallbackAngle=.65,fallbackScale=1,fallbackTouch=null;
 function drawFallback(){
  if(renderer)return;
@@ -114,5 +134,227 @@ async function load3D(){
  }catch(e){console.warn('3D unavailable; fallback active',e);drawFallback()}
 }
 
+</script>
+<script>
+const materialForm = $('materialForm');
+const contentsDraft = $('contentsDraft');
+const contentsStatus = $('contentsStatus');
+const readContents = $('readContents');
+let ocrScript;
+
+function extractUnits(text) {
+  const lines = text.split(/\r?\n/).map(line => {
+    return line.normalize('NFKC').trim()
+      .replace(/\s*(?:[.…⋯・_]{2,}|\s{2,}|\s+)[ \t]*\d{1,4}\s*$/, '')
+      .replace(/^[.…⋯・_\s]+|[.…⋯・_\s]+$/g, '');
+  });
+  return [...new Set(lines.filter(line => /[\p{L}]/u.test(line)
+    && !/^(目次|もくじ|CONTENTS|TABLE OF CONTENTS)$/i.test(line.replace(/^(目)\s+(次)$/u, '$1$2'))))];
+}
+
+function loadOCR() {
+  if (window.Tesseract) return Promise.resolve(window.Tesseract);
+  ocrScript ??= new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@6.0.1/dist/tesseract.min.js';
+    script.onload = () => resolve(window.Tesseract);
+    script.onerror = () => {
+      script.remove();
+      ocrScript = undefined;
+      reject(new Error('文字認識を読み込めませんでした。'));
+    };
+    document.head.append(script);
+  });
+  return ocrScript;
+}
+
+function pdfPageText(items) {
+  let result = '';
+  let previousY;
+  for (const item of items) {
+    if (!('str' in item)) continue;
+    const y = item.transform[5];
+    if (previousY !== undefined && Math.abs(previousY - y) > 5 && !result.endsWith('\n')) {
+      result += '\n';
+    }
+    result += item.str + (item.hasEOL ? '\n' : '');
+    previousY = y;
+  }
+  return result;
+}
+
+readContents.onclick = async () => {
+  const files = Array.from($('contentsFile').files);
+  if (!files.length) {
+    contentsStatus.textContent = '目次の写真かPDFを選んでね。';
+    return;
+  }
+  if (files.length > 20 || files.some(file => file.size > 30 * 1024 * 1024)) {
+    contentsStatus.textContent = '1ファイル30MB以内、合計20ファイルまで選べます。';
+    return;
+  }
+  readContents.disabled = true;
+  const submit = materialForm.querySelector('[type="submit"]');
+  submit.disabled = true;
+  contentsDraft.readOnly = true;
+  contentsStatus.textContent = '読み取りを準備しています…';
+  const results = [];
+  let worker;
+  let pdfjs;
+  let pdfPages = 0;
+  async function recognize(image, languages) {
+    if (!worker) {
+      const ocr = await loadOCR();
+      worker = await ocr.createWorker(languages);
+    }
+    return (await worker.recognize(image)).data.text;
+  }
+  const failures = [];
+  try {
+    for (const [index, file] of files.entries()) {
+      contentsStatus.textContent = `${index + 1}/${files.length}件目を読み取り中…`;
+      try {
+        if (/\.pdf$/i.test(file.name) || file.type === 'application/pdf') {
+          if (!pdfjs) {
+            const pdfRoot = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/';
+            pdfjs = await import(pdfRoot + 'pdf.min.mjs');
+            pdfjs.GlobalWorkerOptions.workerSrc = pdfRoot + 'pdf.worker.min.mjs';
+          }
+          const task = pdfjs.getDocument({
+            data: await file.arrayBuffer(),
+            isEvalSupported: false,
+            cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/cmaps/',
+            cMapPacked: true,
+            standardFontDataUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/standard_fonts/'
+          });
+          try {
+            const pdf = await task.promise;
+            if (pdfPages + pdf.numPages > 20) throw new Error('PDFは合計20ページまでです。');
+            pdfPages += pdf.numPages;
+            for (let number = 1; number <= pdf.numPages; number++) {
+              contentsStatus.textContent = `${index + 1}/${files.length}件目 PDF ${number}/${pdf.numPages}ページ`;
+              const page = await pdf.getPage(number);
+              const {items} = await page.getTextContent();
+              const text = pdfPageText(items);
+              if (extractUnits(text).join('').length >= 12) {
+                results.push(text);
+              } else {
+                const canvas = document.createElement('canvas');
+                const base = page.getViewport({scale: 1});
+                const viewport = page.getViewport({scale: Math.min(3, 2300 / Math.max(base.width, base.height))});
+                canvas.width = Math.ceil(viewport.width);
+                canvas.height = Math.ceil(viewport.height);
+                try {
+                  await page.render({canvasContext: canvas.getContext('2d'), viewport}).promise;
+                  results.push(await recognize(canvas, 'jpn+eng'));
+                } finally {
+                  canvas.width = canvas.height = 0;
+                }
+              }
+            }
+          } finally {
+            await task.destroy();
+          }
+        } else {
+          const image = await createImageBitmap(file);
+          const canvas = document.createElement('canvas');
+          try {
+            const scale = Math.min(1, 2600 / Math.max(image.width, image.height));
+            canvas.width = Math.max(1, Math.round(image.width * scale));
+            canvas.height = Math.max(1, Math.round(image.height * scale));
+            canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+            results.push(await recognize(canvas, 'jpn+eng'));
+          } finally {
+            image.close();
+            canvas.width = canvas.height = 0;
+          }
+        }
+      } catch (error) {
+        failures.push(error.message === 'PDFは合計20ページまでです。' ? error.message : `${index + 1}件目を読み取れませんでした。`);
+        console.warn('目次の読み取りに失敗', error);
+      }
+    }
+    const units = extractUnits(results.join('\n'));
+    if (units.length) {
+      const existing = contentsDraft.value.trim();
+      contentsDraft.value = [...new Set([...existing.split('\n').filter(Boolean), ...units])].join('\n');
+    }
+    contentsStatus.textContent = [
+      units.length ? `${units.length}行を読み取ったよ。単元名を確認してね。` : '単元の候補が見つかりませんでした。別の画像を選ぶか、手入力できます。',
+      ...failures
+    ].join(' ');
+  } finally {
+    try {
+      await worker?.terminate();
+    } finally {
+      readContents.disabled = false;
+      submit.disabled = false;
+      contentsDraft.readOnly = false;
+    }
+  }
+};
+
+materialForm.onsubmit = event => {
+  event.preventDefault();
+  const title = $('bookTitle').value.trim();
+  const units = [...new Set(contentsDraft.value.split(/\r?\n/).map(line => line.trim()).filter(Boolean))];
+  if (!title || !units.length) {
+    contentsStatus.textContent = '教材名と単元名を入力してね。';
+    return;
+  }
+  const materials = [...(data.materials ?? []), {subject, title, units}];
+  try {
+    localStorage.setItem(key, JSON.stringify({...data, materials}));
+  } catch {
+    contentsStatus.textContent = '保存できませんでした。入力内容は残っています。';
+    return;
+  }
+  data.materials = materials;
+  materialForm.reset();
+  renderMaterials();
+  contentsStatus.textContent = `${title}を${names[keys.indexOf(subject)]}に追加しました。`;
+};
+
+function renderMaterials() {
+  const subjectName = names[keys.indexOf(subject)];
+  $('materialsTitle').textContent = `${subjectName}の教材`;
+  const books = (data.materials ?? []).filter(book => book.subject === subject);
+  const list = $('materialsList');
+  list.replaceChildren();
+  if (!books.length) {
+    const emptyMessage = document.createElement('p');
+    emptyMessage.className = 'muted';
+    emptyMessage.textContent = 'この教科の教材はまだありません。';
+    list.append(emptyMessage);
+    return;
+  }
+  for (const book of books) {
+    const section = document.createElement('section');
+    section.className = 'record';
+    const heading = document.createElement('h3');
+    heading.textContent = book.title;
+    const units = document.createElement('ol');
+    units.className = 'material-units';
+    for (const unit of book.units) {
+      const item = document.createElement('li');
+      const button = document.createElement('button');
+      button.className = 'secondary material-unit';
+      button.type = 'button';
+      button.textContent = unit;
+      button.onclick = () => {
+        $('pUnit').value = unit;
+        $('pMaterial').value = book.title;
+        $('pUnit').focus();
+      };
+      item.append(button);
+      units.append(item);
+    }
+    section.append(heading, units);
+    list.append(section);
+  }
+}
+
+</script>
+<script>
 renderSubjects();refresh();load3D();
 </script></body></html>
